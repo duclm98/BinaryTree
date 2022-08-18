@@ -1,5 +1,8 @@
 #include <iostream>
+#include <limits.h>
 using namespace std;
+
+#define IMAX INT_MAX
 
 struct Node {
     int val;
@@ -33,6 +36,63 @@ Node* InsertNode(Node* node, int val) {
         }
     }
     return node;
+}
+
+Node* FindParentNode(Node* node, int val, int level) {
+    if (node == NULL)
+        return NULL;
+    else {
+        if (val == node->val) {
+            if (level == 0)
+                return NULL;
+            else
+                return CreateNode(IMAX);
+        }
+        else if (val < node->val) {
+            Node* left = FindParentNode(node->left, val, level + 1);
+            if (left != NULL && left->val == IMAX)
+                return node;
+        }
+        else {
+            Node* right = FindParentNode(node->right, val, level + 1);
+            if (right != NULL && right->val == IMAX)
+                return node;
+        }
+    }
+}
+
+Node* RemoveNode(Node* node, int val) {
+    if (node == NULL)
+        return NULL;
+    if (val == node->val) {
+        if (node->left == NULL && node->right == NULL) {
+            Node* parent = FindParentNode(node, val, 0);
+            if (parent != NULL) {
+                if (val < parent->val)
+                    parent->left = NULL;
+                else {
+                    parent->right = NULL;
+                }
+            }
+            delete node;
+        }
+        else if (node->left != NULL && node->right == NULL) {
+
+        }
+        else if (node->left == NULL && node->right != NULL) {
+
+        }
+        else
+        {
+
+        }
+    }
+    else if (val < node->val) {
+        RemoveNode(node->left, val);
+    }
+    else {
+        RemoveNode(node->right, val);
+    }
 }
 
 void NLR(Node* node) {
@@ -75,6 +135,8 @@ int main()
             flag = false;
         }
     }
+
+    RemoveNode(root, 4);
 
     cout << "Duyet cay theo thu tu Node-Left-Right: " << endl;
     NLR(root);
