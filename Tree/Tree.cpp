@@ -38,26 +38,37 @@ Node* InsertNode(Node* node, int val) {
     return node;
 }
 
+Node* FindNode(Node* node, int val) {
+    if (node == NULL)
+        return NULL;
+
+    if (val == node->val)
+        return node;
+    else if (val < node->val)
+        FindNode(node->left, val);
+    else
+        FindNode(node->right, val);
+}
+
 Node* FindParentNode(Node* node, int val, int level) {
     if (node == NULL)
         return NULL;
+    
+    if (val == node->val) {
+        if (level == 0)
+            return NULL;
+        else
+            return CreateNode(IMAX);
+    }
+    else if (val < node->val) {
+        Node* left = FindParentNode(node->left, val, level + 1);
+        if (left != NULL && left->val == IMAX)
+            return node;
+    }
     else {
-        if (val == node->val) {
-            if (level == 0)
-                return NULL;
-            else
-                return CreateNode(IMAX);
-        }
-        else if (val < node->val) {
-            Node* left = FindParentNode(node->left, val, level + 1);
-            if (left != NULL && left->val == IMAX)
-                return node;
-        }
-        else {
-            Node* right = FindParentNode(node->right, val, level + 1);
-            if (right != NULL && right->val == IMAX)
-                return node;
-        }
+        Node* right = FindParentNode(node->right, val, level + 1);
+        if (right != NULL && right->val == IMAX)
+            return node;
     }
 }
 
@@ -135,8 +146,6 @@ int main()
             flag = false;
         }
     }
-
-    RemoveNode(root, 4);
 
     cout << "Duyet cay theo thu tu Node-Left-Right: " << endl;
     NLR(root);
